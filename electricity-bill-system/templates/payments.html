@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Payments{% endblock %}
+{% block content %}
+<h1>Payments</h1>
+<div class="card">
+{% if payments %}
+<table>
+  <thead><tr><th>Payment #</th><th>Bill #</th><th>Service no</th><th>Consumer</th><th>Date</th><th>Method</th><th>Amount</th></tr></thead>
+  <tbody>
+  {% for p in payments %}
+    <tr>
+      <td>{{ p.payment_id }}</td>
+      <td><a href="{{ url_for('bill_view', bill_id=p.bill_id) }}">{{ p.bill_id }}</a></td>
+      <td>{{ p.service_no }}</td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.payment_date }}</td>
+      <td>{{ p.method.replace('_', ' ') }}</td>
+      <td>₹{{ '%.2f'|format(p.amount_paid) }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No payments yet.</p>
+{% endif %}
+</div>
+{% endblock %}

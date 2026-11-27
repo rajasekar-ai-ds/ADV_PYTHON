@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Consumers{% endblock %}
+{% block content %}
+<div class="row">
+  <h1>Consumers</h1>
+  <a class="button" href="{{ url_for('consumer_new') }}">+ Add consumer</a>
+</div>
+<form class="search" method="get">
+  <input name="q" value="{{ q }}" placeholder="Search by name, service no or phone">
+  <button type="submit">Search</button>
+  {% if q %}<a href="{{ url_for('consumers') }}">Clear</a>{% endif %}
+</form>
+<div class="card">
+{% if consumers %}
+<table>
+  <thead><tr><th>Service no</th><th>Name</th><th>Phone</th><th>Type</th><th>Address</th><th></th></tr></thead>
+  <tbody>
+  {% for c in consumers %}
+    <tr>
+      <td>{{ c.service_no }}</td>
+      <td>{{ c.name }}</td>
+      <td>{{ c.phone }}</td>
+      <td>{{ c.connection_type }}</td>
+      <td>{{ c.address }}</td>
+      <td><a href="{{ url_for('consumer_detail', consumer_id=c.consumer_id) }}">Open</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No consumers found.</p>
+{% endif %}
+</div>
+{% endblock %}

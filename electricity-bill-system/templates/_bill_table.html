@@ -1,0 +1,27 @@
+{% set rows = recent if recent is defined else bills %}
+{% if rows %}
+<table>
+  <thead><tr><th>Bill #</th><th>Service no</th><th>Consumer</th><th>Bill date</th><th>Due date</th><th>Units</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for b in rows %}
+    <tr>
+      <td>{{ b.bill_id }}</td>
+      <td>{{ b.service_no }}</td>
+      <td>{{ b.name }}</td>
+      <td>{{ b.bill_date }}</td>
+      <td>{{ b.due_date }}</td>
+      <td>{{ b.units_consumed }}</td>
+      <td>₹{{ '%.2f'|format(b.total_amount) }}</td>
+      <td>
+        {% if b.status == 'PAID' %}<span class="badge paid">PAID</span>
+        {% elif b.is_overdue %}<span class="badge overdue">OVERDUE</span>
+        {% else %}<span class="badge unpaid">UNPAID</span>{% endif %}
+      </td>
+      <td><a href="{{ url_for('bill_view', bill_id=b.bill_id) }}">View</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No bills yet.</p>
+{% endif %}

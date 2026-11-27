@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Bills{% endblock %}
+{% block content %}
+<h1>Bills</h1>
+<div class="tabs">
+  {% for s, label in [('', 'All'), ('UNPAID', 'Unpaid'), ('OVERDUE', 'Overdue'), ('PAID', 'Paid')] %}
+    <a href="{{ url_for('bills', status=s) if s else url_for('bills') }}" class="{{ 'active' if status == s }}">{{ label }}</a>
+  {% endfor %}
+</div>
+<div class="card">
+  {% include "_bill_table.html" with context %}
+</div>
+{% endblock %}

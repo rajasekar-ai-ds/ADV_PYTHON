@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Tariff{% endblock %}
+{% block content %}
+<h1>Tariff</h1>
+<p class="muted">Changes apply only to bills generated after saving. Existing bills keep their stored amounts.</p>
+<form method="post">
+<div class="two-col">
+  {% for t in ['DOMESTIC', 'COMMERCIAL'] %}
+  <div class="card">
+    <h2>{{ t.title() }}</h2>
+    <table>
+      <tr><th>Units</th><th>Rate (₹/unit)</th></tr>
+      {% for s in slabs if s.connection_type == t %}
+      <tr>
+        <td>{{ s.from_unit }} – {{ s.to_unit if s.to_unit is not none else 'above' }}</td>
+        <td><input type="number" step="0.01" min="0" name="rate_{{ s.slab_id }}" value="{{ s.rate_per_unit }}" required></td>
+      </tr>
+      {% endfor %}
+      {% for f in fixed if f.connection_type == t %}
+      <tr><td><b>Fixed charge / bill</b></td>
+          <td><input type="number" step="0.01" min="0" name="fixed_{{ t }}" value="{{ f.amount }}" required></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endfor %}
+</div>
+<button type="submit">Save tariff</button>
+</form>
+{% endblock %}

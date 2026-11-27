@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ c.name }}{% endblock %}
+{% block content %}
+<div class="row">
+  <h1>{{ c.name }} <span class="muted">({{ c.service_no }})</span></h1>
+  <div>
+    <a class="button secondary" href="{{ url_for('consumer_edit', consumer_id=c.consumer_id) }}">Edit</a>
+    <form method="post" action="{{ url_for('consumer_delete', consumer_id=c.consumer_id) }}" class="inline"
+          onsubmit="return confirm('Delete this consumer and all their bills?');">
+      <button class="danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <h2>Details</h2>
+    <p><b>Address:</b> {{ c.address }}</p>
+    <p><b>Phone:</b> {{ c.phone }}</p>
+    <p><b>Email:</b> {{ c.email or '—' }}</p>
+    <p><b>Connection:</b> {{ c.connection_type }}</p>
+    <p><b>Initial reading:</b> {{ c.initial_reading }}</p>
+  </div>
+  <div class="card">
+    <h2>New meter reading → generate bill</h2>
+    <p class="muted">Previous reading: <b>{{ last_reading }}</b></p>
+    <form method="post" action="{{ url_for('add_reading', consumer_id=c.consumer_id) }}">
+      <label>Reading date <input type="date" name="reading_date" value="{{ today }}" required></label>
+      <label>Current reading <input type="number" name="reading_value" min="{{ last_reading }}" required></label>
+      <button type="submit">Generate bill</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Bill history</h2>
+  {% include "_bill_table.html" with context %}
+</div>
+{% endblock %}

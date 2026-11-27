@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Bill #{{ b.bill_id }}{% endblock %}
+{% block content %}
+<div class="row no-print">
+  <a href="{{ url_for('consumer_detail', consumer_id=b.consumer_id) }}">← Back to consumer</a>
+  <button onclick="window.print()">Print bill</button>
+</div>
+
+<div class="card bill">
+  <div class="bill-head">
+    <div>
+      <h1>⚡ Electricity Bill</h1>
+      <p class="muted">Bill #{{ b.bill_id }}</p>
+    </div>
+    <div class="right">
+      {% if b.status == 'PAID' %}<span class="badge paid big">PAID</span>
+      {% elif b.due_date < today %}<span class="badge overdue big">OVERDUE</span>
+      {% else %}<span class="badge unpaid big">UNPAID</span>{% endif %}
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <p><b>{{ b.name }}</b></p>
+      <p>{{ b.address }}</p>
+      <p>Phone: {{ b.phone }}</p>
+    </div>
+    <div>
+      <p><b>Service no:</b> {{ b.service_no }}</p>
+      <p><b>Connection:</b> {{ b.connection_type }}</p>
+      <p><b>Bill date:</b> {{ b.bill_date }}</p>
+      <p><b>Due date:</b> {{ b.due_date }}</p>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Previous reading</th><th>Current reading</th><th>Units consumed</th></tr>
+    <tr><td>{{ b.previous_reading }}</td><td>{{ b.current_reading }}</td><td>{{ b.units_consumed }}</td></tr>
+  </table>
+
+  {% if breakdown %}
+  <h3>Slab-wise energy charge</h3>
+  <table>
+    <tr><th>Slab (units)</th><th>Units</th><th>Rate (₹/unit)</th><th>Amount (₹)</th></tr>
+    {% for s in breakdown %}
+    <tr><td>{{ s.range }}</td><td>{{ s.units }}</td><td>{{ '%.2f'|format(s.rate) }}</td><td>{{ '%.2f'|format(s.amount) }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  <table class="totals">
+    <tr><td>Energy charge</td><td>₹{{ '%.2f'|format(b.energy_charge) }}</td></tr>
+    <tr><td>Fixed charge</td><td>₹{{ '%.2f'|format(b.fixed_charge) }}</td></tr>
+    <tr class="grand"><td>Total amount</td><td>₹{{ '%.2f'|format(b.total_amount) }}</td></tr>
+  </table>
+
+  {% if payment %}
+    <p class="paid-note">Paid ₹{{ '%.2f'|format(payment.amount_paid) }} on {{ payment.payment_date }} via {{ payment.method }} (Payment #{{ payment.payment_id }})</p>
+  {% endif %}
+</div>
+
+{% if not payment %}
+<div class="card no-print">
+  <h2>Record payment</h2>
+  <form method="post" action="{{ url_for('pay_bill', bill_id=b.bill_id) }}" class="inline-form">
+    <select name="method" required>
+      <option value="">Payment method</option>
+      {% for m in methods %}<option value="{{ m }}">{{ m.replace('_', ' ') }}</option>{% endfor %}
+    </select>
+    <button type="submit">Pay ₹{{ '%.2f'|format(b.total_amount) }}</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

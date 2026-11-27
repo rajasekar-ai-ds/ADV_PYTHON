@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if editing else 'Add' }} consumer{% endblock %}
+{% block content %}
+<h1>{{ 'Edit' if editing else 'Add' }} consumer</h1>
+<div class="card">
+<form method="post" class="grid-form">
+  <label>Service number <input name="service_no" value="{{ c.service_no or '' }}" required maxlength="20"></label>
+  <label>Name <input name="name" value="{{ c.name or '' }}" required maxlength="100"></label>
+  <label class="wide">Address <input name="address" value="{{ c.address or '' }}" required maxlength="255"></label>
+  <label>Phone (10 digits) <input name="phone" value="{{ c.phone or '' }}" required pattern="[0-9]{10}"></label>
+  <label>Email <input name="email" type="email" value="{{ c.email or '' }}"></label>
+  <label>Connection type
+    <select name="connection_type">
+      {% for t in types %}<option value="{{ t }}" {% if c.connection_type == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Initial meter reading
+    <input name="initial_reading" type="number" min="0" value="{{ c.initial_reading if c.initial_reading is not none else 0 }}"
+           {% if lock_initial %}readonly title="Locked after the first reading"{% endif %}>
+  </label>
+  <div class="wide">
+    <button type="submit">Save</button>
+    <a href="{{ url_for('consumer_detail', consumer_id=c.consumer_id) if editing else url_for('consumers') }}">Cancel</a>
+  </div>
+</form>
+</div>
+{% endblock %}

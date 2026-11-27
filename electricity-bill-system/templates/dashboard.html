@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="stats">
+  <div class="stat"><span>Consumers</span><strong>{{ stats.consumers }}</strong></div>
+  <div class="stat"><span>Unpaid bills</span><strong>{{ stats.unpaid_bills }}</strong></div>
+  <div class="stat"><span>Pending amount</span><strong>₹{{ '%.2f'|format(stats.pending_amount) }}</strong></div>
+  <div class="stat"><span>Collected this month</span><strong>₹{{ '%.2f'|format(stats.collected_this_month) }}</strong></div>
+  <div class="stat warn"><span>Overdue bills</span><strong>{{ stats.overdue_bills }}</strong></div>
+</div>
+
+<div class="card">
+  <h2>Recent bills</h2>
+  {% include "_bill_table.html" with context %}
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card login">
+  <h1>⚡ Electricity Bill Management</h1>
+  <p class="muted">Admin login</p>
+  <form method="post">
+    <label>Username <input name="username" required autofocus></label>
+    <label>Password <input name="password" type="password" required></label>
+    <button type="submit">Login</button>
+  </form>
+  <p class="muted small">Default on first run: admin / admin123</p>
+</div>
+{% endblock %}
